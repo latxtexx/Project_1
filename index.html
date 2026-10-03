@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#050811">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AntiGrav Cash Flow // CYBER GAMING HUD - POCO X8 PRO EDITION</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            chakra: ['"Chakra Petch"', 'sans-serif'],
+            orbitron: ['"Orbitron"', 'sans-serif'],
+            mono: ['"Share Tech Mono"', 'monospace'],
+            sans: ['"Chakra Petch"', 'sans-serif']
+          },
+          colors: {
+            cyber: {
+              cyan: '#00f0ff',
+              emerald: '#00ff9d',
+              pink: '#ff007f',
+              rose: '#ff2a5f',
+              yellow: '#ffe600',
+              amber: '#ffaa00',
+              purple: '#b026ff',
+              indigo: '#7928ca',
+              dark: '#050811',
+              panel: '#090e1d',
+              card: '#0c1427',
+              border: '#162238'
+            }
+          },
+          boxShadow: {
+            'neon-cyan': '0 0 15px rgba(0, 240, 255, 0.35)',
+            'neon-emerald': '0 0 15px rgba(0, 255, 157, 0.35)',
+            'neon-rose': '0 0 15px rgba(255, 42, 95, 0.35)',
+            'neon-purple': '0 0 15px rgba(176, 38, 255, 0.35)',
+            'neon-amber': '0 0 15px rgba(255, 170, 0, 0.35)'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons & Chart.js -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Gaming & Sci-Fi Fonts with Full Thai Glyph Support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cyan: #00f0ff;
+      --color-emerald: #00ff9d;
+      --color-rose: #ff2a5f;
+      --color-amber: #ffaa00;
+      --color-purple: #b026ff;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, select, textarea {
+      user-select: text;
+    }
+
+    body {
+      font-family: 'Chakra Petch', sans-serif;
+      background-color: #050811;
+      color: #e2e8f0;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(176, 38, 255, 0.08) 0%, transparent 40%),
+        linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      overflow-x: hidden;
+    }
+
+    /* Chamfered Gaming Corners */
+    .clip-corner {
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .clip-corner-sm {
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .clip-corner-top {
+      clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    }
+
+    /* Cyber HUD Borders & Glows */
+    .hud-card {
+      background: linear-gradient(135deg, rgba(12, 20, 39, 0.9) 0%, rgba(9, 14, 29, 0.95) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.18);
+      position: relative;
+    }
+    .hud-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid #00f0ff;
+      border-left: 2px solid #00f0ff;
+      pointer-events: none;
+    }
+    .hud-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-bottom: 2px solid #00f0ff;
+      border-right: 2px solid #00f0ff;
+      pointer-events: none;
+    }
+
+    /* Scanlines effect (subtle) */
+    .scanlines-overlay {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+    }
+
+    /* Animated Energy Health/Shield Gauge Bar */
+    .energy-bar-fill {
+      background: linear-gradient(90deg, #00ff9d 0%, #00f0ff 100%);
+      background-size: 20px 20px;
+      background-image: linear-gradient(
+        45deg, 
+        rgba(255, 255, 255, 0.15) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255, 255, 255, 0.15) 50%, 
+        rgba(255, 255, 255, 0.15) 75%, 
+        transparent 75%, 
+        transparent
+      );
+      animation: energyStripes 1.2s linear infinite;
+    }
+    @keyframes energyStripes {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+
+    /* Glowing Pulse */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8)); }
+      50% { opacity: 0.5; filter: drop-shadow(0 0 2px rgba(0, 240, 255, 0.3)); }
+    }
+    .radar-pulse {
+      animation: pulseGlow 1.8s ease-in-out infinite;
+    }
+
+    /* Custom Touch Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #050811;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #00f0ff33;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #00f0ff88;
+    }
+
+    /* Cyber Touch Button */
+    .cyber-btn {
+      position: relative;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cyber-btn:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar relative pb-28 md:pb-8 selection:bg-cyan-500 selection:text-black">
+
+  <!-- Subtle Ambient Scanline Overlay -->
+  <div class="fixed inset-0 scanlines-overlay opacity-30 z-30 pointer-events-none"></div>
+
+  <!-- Top Tactical Navigation HUD Header -->
+  <header class="sticky top-0 z-40 bg-[#070b16]/90 backdrop-blur-md border-b border-cyan-500/25 px-3 sm:px-6 py-2.5 sm:py-3 transition-all pt-[max(env(safe-area-inset-top),0.6rem)]">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      
+      <!-- Brand & Pilot Badge -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-tr from-cyan-600 via-cyan-400 to-emerald-400 p-[1.5px] clip-corner shadow-neon-cyan flex items-center justify-center shrink-0">
+          <div class="w-full h-full bg-[#050811] flex items-center justify-center clip-corner">
+            <i data-lucide="crosshair" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+        </div>
+        
+        <div>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="font-orbitron font-extrabold tracking-wider text-sm sm:text-base text-white">
+              ANTIGRAV <span class="text-cyan-400">HUD</span>
+            </span>
+            <span class="text-[9px] sm:text-[10px] bg-cyan-950 text-cyan-300 font-mono font-bold px-1.5 py-0.5 rounded border border-cyan-500/40 uppercase">
+              v2.6 GAME
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 radar-pulse inline-block"></span>
+            <span class="text-emerald-400 font-bold">ONLINE</span>
+            <span class="text-slate-600">|</span>
+            <span class="text-cyan-400/90 hidden xs:inline sm:inline">POCO X8 PRO [120Hz TURBO]</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Tactical Horizon Tabs -->
+      <div class="hidden md:flex bg-[#0a1020] p-1 rounded-xl border border-cyan-500/30 shadow-inner">
+        <button onclick="setHorizon('daily')" id="tab-daily" class="horizon-tab px-4 py-1.5 text-xs font-bold rounded-lg transition-all bg-cyan-400 text-black shadow-neon-cyan flex items-center gap-1.5">
+          <i data-lucide="crosshair" class="w-3.5 h-3.5"></i> <span>RADAR (รายวัน)</span>
+        </button>
+        <button onclick="setHorizon('weekly')" id="tab-weekly" class="horizon-tab px-4 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-cyan-300 flex items-center gap-1.5">
+          <i data-lucide="activity" class="w-3.5 h-3.5"></i> <span>TIMELINE (รายสัปดาห์)</span>
+        </button>
+        <button onclick="setHorizon('monthly')" id="tab-monthly" class="horizon-tab px-4 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-cyan-300 flex items-center gap-1.5">
+          <i data-lucide="shield" class="w-3.5 h-3.5"></i> <span>VAULT (รายเดือน)</span>
+        </button>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="flex items-center gap-2">
+        <!-- SFX Toggle Button -->
+        <button onclick="AudioEngine.toggle()" id="sfx-toggle-btn" title="เปิด/ปิดเสียงเอฟเฟกต์ Game SFX" class="bg-cyan-950/60 hover:bg-cyan-900/60 text-cyan-400 border border-cyan-500/30 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 cyber-btn shadow-sm">
+          <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">SFX: ON</span>
+        </button>
+
+        <!-- Desktop Quick Add Button -->
+        <button onclick="openTxModal()" class="hidden md:flex bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:brightness-110 text-slate-950 font-black px-4 py-2 rounded-xl text-xs items-center gap-2 shadow-neon-cyan cyber-btn tracking-wider uppercase">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>บันทึกคำสั่งเงิน</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main HUD Viewport (Optimized for Poco X8 Pro 20:9 Viewport & Desktop) -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 lg:p-8 space-y-4 sm:space-y-6">
+
+    <!-- Device Telemetry & Mission Directive Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] font-mono text-cyan-400/80">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-500">//</span>
+        <span>PILOT: <strong class="text-white">ARCHITECT-01</strong></span>
+        <span class="text-slate-500">|</span>
+        <span>MISSION: <strong class="text-emerald-400">LIQUIDITY SUPREMACY</strong></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="bg-cyan-950/80 border border-cyan-500/30 px-2 py-0.5 rounded text-[10px] text-cyan-300">
+          DISP: POCO X8 PRO 2712x1220
+        </span>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TOP 4 VITAL SIGNS (GAME HUD GAUGES)
+         Mobile: 2x2 Grid for Poco X8 Pro Ergonomics
+         Desktop: 4 Columns
+    ========================================== -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+      
+      <!-- GAUGE 1: Liquid Balance (CREDITS) -->
+      <div class="hud-card p-3.5 sm:p-5 rounded-xl sm:rounded-2xl clip-corner">
+        <div class="flex items-center justify-between text-slate-400 mb-1.5 sm:mb-2">
+          <span class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-cyan-400/90 flex items-center gap-1">
+            <i data-lucide="coins" class="w-3 h-3 text-cyan-400"></i>
+            CREDITS สภาพคล่อง
+          </span>
+          <span class="text-[9px] font-mono bg-cyan-950/80 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/30">
+            LIQUID
+          </span>
+        </div>
+        <div class="text-xl sm:text-3xl font-orbitron font-black text-white tracking-tight" id="stat-liquid-balance">฿0</div>
+        <div class="flex items-center justify-between mt-2 pt-2 border-t border-cyan-500/20 text-[10px] sm:text-xs font-mono">
+          <span class="text-slate-400">กันไว้จ่ายบัตร:</span>
+          <span class="text-amber-400 font-bold" id="stat-escrow">฿0</span>
+        </div>
+      </div>
+
+      <!-- GAUGE 2: Safe-to-Spend (DAILY SHIELD) -->
+      <div class="hud-card p-3.5 sm:p-5 rounded-xl sm:rounded-2xl clip-corner">
+        <div class="flex items-center justify-between text-slate-400 mb-1.5 sm:mb-2">
+          <span class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-emerald-400 flex items-center gap-1">
+            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i>
+            DAILY SHIELD วันนี้
+          </span>
+          <span class="text-[9px] font-mono bg-emerald-950/80 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/30">
+            SAFE
+          </span>
+        </div>
+        <div class="text-xl sm:text-3xl font-orbitron font-black text-emerald-400 tracking-tight" id="stat-safe-spend">฿0</div>
+        
+        <!-- Game Style Shield Energy Bar -->
+        <div class="w-full bg-slate-900/90 h-2 sm:h-2.5 rounded-full mt-2 sm:mt-3 overflow-hidden border border-emerald-500/30 p-[1px]">
+          <div id="stat-safe-bar" class="energy-bar-fill h-full rounded-full transition-all duration-500 shadow-neon-emerald" style="width: 0%"></div>
+        </div>
+        <div class="flex items-center justify-between mt-1.5 text-[9px] sm:text-[11px] font-mono text-slate-400">
+          <span id="stat-spent-today-text" class="truncate max-w-[70%]">ใช้ไป: ฿0</span>
+          <span id="stat-spent-pct" class="font-bold text-cyan-300">0%</span>
+        </div>
+      </div>
+
+      <!-- GAUGE 3: Cash Runway (SURVIVAL OXYGEN) -->
+      <div class="hud-card p-3.5 sm:p-5 rounded-xl sm:rounded-2xl clip-corner">
+        <div class="flex items-center justify-between text-slate-400 mb-1.5 sm:mb-2">
+          <span class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-cyan-300 flex items-center gap-1">
+            <i data-lucide="hourglass" class="w-3 h-3 text-cyan-400"></i>
+            SURVIVAL RUNWAY
+          </span>
+          <span class="text-[9px] font-mono bg-cyan-950/80 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-500/30">
+            OXYGEN
+          </span>
+        </div>
+        <div class="text-xl sm:text-3xl font-orbitron font-black text-cyan-300 tracking-tight" id="stat-runway">
+          0.0 <span class="text-xs sm:text-sm font-normal text-slate-400">เดือน</span>
+        </div>
+        <div class="flex items-center justify-between mt-2 pt-2 border-t border-cyan-500/20 text-[10px] sm:text-xs font-mono text-slate-400">
+          <span class="flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> กรณีไร้รายได้</span>
+          <span class="text-emerald-400 font-bold">READY</span>
+        </div>
+      </div>
+
+      <!-- GAUGE 4: Savings Rate & OCF (XP & EFFICIENCY) -->
+      <div class="hud-card p-3.5 sm:p-5 rounded-xl sm:rounded-2xl clip-corner">
+        <div class="flex items-center justify-between text-slate-400 mb-1.5 sm:mb-2">
+          <span class="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-purple-400 flex items-center gap-1">
+            <i data-lucide="trending-up" class="w-3 h-3 text-purple-400"></i>
+            XP & OCF RATIO
+          </span>
+          <span class="text-[9px] font-mono bg-purple-950/80 text-purple-300 px-1.5 py-0.5 rounded border border-purple-500/30">
+            STATS
+          </span>
+        </div>
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-xl sm:text-3xl font-orbitron font-black text-purple-400 tracking-tight" id="stat-savings-rate">0%</span>
+          <span class="text-[10px] sm:text-xs font-mono text-slate-400">SAVINGS</span>
+        </div>
+        <div class="flex items-center justify-between mt-2 pt-2 border-t border-cyan-500/20 text-[10px] sm:text-xs font-mono">
+          <span class="text-slate-400">OCF Ratio:</span>
+          <span class="text-emerald-400 font-bold" id="stat-ocf">0.0x</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Guardrail Tactical Warning Banner -->
+    <div id="guardrail-alert" class="hidden p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border transition-all clip-corner font-chakra"></div>
+
+    <!-- ========================================================
+         VIEW 1: DAILY RADAR (COMMAND CENTER)
+    ======================================================== -->
+    <section id="view-daily" class="space-y-4 sm:space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        
+        <!-- Left 2 Cols: 30-Day Predictive Cash Flow Chart -->
+        <div class="lg:col-span-2 hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+                <span>30-CYCLE CASH TRAJECTORY (การพยากรณ์เงินสด)</span>
+              </h2>
+              <p class="text-[11px] sm:text-xs text-slate-400 font-mono">จำลองยอดคงเหลือสุทธิหลังหัก Fixed Obligations และ Daily Burn</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] font-mono bg-[#050811] text-cyan-400 px-2.5 py-1 rounded border border-cyan-500/40">
+                PROJECTION: 30 DAYS
+              </span>
+            </div>
+          </div>
+
+          <div class="relative h-60 sm:h-72 w-full">
+            <canvas id="forecastChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right Col: Daily Safe-to-Spend Breakdown Terminal -->
+        <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i>
+                <span>SHIELD ALGORITHM</span>
+              </h2>
+              <span class="text-[9px] font-mono bg-cyan-950 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-500/30">
+                AUTO-CALC
+              </span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-400 font-mono mb-3">หักรายจ่ายตายตัว บิลบัตร และเป้าหมายออมก่อนเสมือนดั่งเกราะป้องกัน</p>
+
+            <div class="space-y-2 text-xs font-mono">
+              <div class="flex justify-between items-center py-1.5 border-b border-cyan-500/15">
+                <span class="text-slate-400">เงินสดพร้อมใช้รวม (Liquid):</span>
+                <span class="font-bold text-white" id="calc-liquid">฿0</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-cyan-500/15">
+                <span class="text-slate-400">หัก: บิลคงที่ที่ต้องจ่าย (Fixed):</span>
+                <span class="font-bold text-rose-400" id="calc-fixed">-฿0</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-cyan-500/15">
+                <span class="text-slate-400">หัก: เป้าหมายเงินออมที่ค้าง:</span>
+                <span class="font-bold text-purple-400" id="calc-savings">-฿0</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-cyan-500/15">
+                <span class="text-slate-400">หัก: Buffer สำรองความปลอดภัย (5%):</span>
+                <span class="font-bold text-amber-400" id="calc-buffer">-฿0</span>
+              </div>
+              <div class="flex justify-between items-center py-2 bg-[#050811]/90 p-2.5 rounded-lg border border-cyan-500/30 font-bold">
+                <span class="text-cyan-400">เงินที่ใช้ได้อิสระทั้งหมด:</span>
+                <span class="text-cyan-400 text-sm font-orbitron" id="calc-free">฿0</span>
+              </div>
+              <div class="text-right text-[10px] text-slate-400 pt-0.5" id="calc-days-remaining">
+                เหลืออีก 0 วันในรอบเดือน
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-cyan-500/20">
+            <div class="text-center p-3 bg-cyan-950/40 rounded-xl border border-cyan-500/30 clip-corner-sm">
+              <div class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">วงเงินแนะนำต่อวัน (Daily Allowance)</div>
+              <div class="text-2xl font-orbitron font-black text-cyan-300 mt-0.5 shadow-neon-cyan" id="calc-daily-result">฿0 / วัน</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Cash Movements (Tactical Mission Data Log) -->
+      <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
+          <div class="flex items-center gap-2">
+            <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
+            <h2 class="text-sm sm:text-base font-bold text-white">MISSION DATA LOGS (รายการเคลื่อนไหวล่าสุด)</h2>
+          </div>
+          <span class="text-[11px] font-mono bg-cyan-950/70 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/30" id="tx-count-text">0 รายการ</span>
+        </div>
+
+        <!-- Responsive Table Container -->
+        <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0 px-4 sm:px-0">
+          <div class="inline-block min-w-full align-middle">
+            <table class="min-w-full text-left text-xs font-chakra">
+              <thead class="text-cyan-400/80 border-b border-cyan-500/25 uppercase font-mono tracking-wider text-[10px] bg-[#050811]/70">
+                <tr>
+                  <th class="py-2.5 px-3 sm:px-4">TIMESTAMP</th>
+                  <th class="py-2.5 px-3 sm:px-4">TYPE</th>
+                  <th class="py-2.5 px-3 sm:px-4">CATEGORY</th>
+                  <th class="py-2.5 px-3 sm:px-4">ACCOUNT</th>
+                  <th class="py-2.5 px-3 sm:px-4">DIRECTIVE / NOTE</th>
+                  <th class="py-2.5 px-3 sm:px-4 text-right">CREDITS</th>
+                </tr>
+              </thead>
+              <tbody id="transaction-table-body" class="divide-y divide-cyan-500/10 font-mono text-[11px] sm:text-xs">
+                <!-- Dynamically rendered with Cyber Game Badges -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 2: WEEKLY TIMELINE
+    ======================================================== -->
+    <section id="view-weekly" class="hidden space-y-4 sm:space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        
+        <!-- Left: Weekly Comparison Bar Chart -->
+        <div class="lg:col-span-2 hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-400"></i>
+                <span>WEEKLY INFLOW VS OUTFLOW (กระแสเงินสดรายสัปดาห์)</span>
+              </h2>
+              <p class="text-[11px] sm:text-xs text-slate-400 font-mono">วิเคราะห์แนวโน้มกระสุนรับ-จ่ายประจำสัปดาห์</p>
+            </div>
+          </div>
+          <div class="relative h-64 sm:h-72 w-full">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right: Spike Days Detector -->
+        <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+              <span>SURGE ANOMALIES (Spike Days)</span>
+            </h2>
+            <span class="text-[9px] font-mono bg-amber-950 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/30">
+              RADAR
+            </span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-mono mb-4">ตรวจจับยอดกระสุนจ่ายที่พุ่งสูงผิดปกติเกิน 2 เท่าของเกณฑ์เฉลี่ย</p>
+
+          <div id="spike-days-container" class="space-y-3">
+            <!-- Dynamically rendered with alert cards -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 3: MONTHLY VAULT
+    ======================================================== -->
+    <section id="view-monthly" class="hidden space-y-4 sm:space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        
+        <!-- Left: Monthly Summary & Net Position -->
+        <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner flex flex-col justify-between">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white mb-1 flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+              <span>MONTHLY DEBRIEF (สรุปภาพรวมรอบเดือน)</span>
+            </h2>
+            <p class="text-[11px] sm:text-xs text-slate-400 font-mono mb-4">สรุป Net Cash Position ของวงรอบเดือนปัจจุบัน</p>
+
+            <div class="space-y-3 font-mono">
+              <div class="p-3 sm:p-4 bg-[#050811]/80 rounded-xl border border-cyan-500/20">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider">TOTAL INFLOW (รายรับรวม):</span>
+                <div class="text-xl sm:text-2xl font-orbitron font-black text-emerald-400 mt-1" id="m-income">฿0</div>
+              </div>
+              <div class="p-3 sm:p-4 bg-[#050811]/80 rounded-xl border border-cyan-500/20">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider">TOTAL OUTFLOW (รายจ่ายรวม):</span>
+                <div class="text-xl sm:text-2xl font-orbitron font-black text-rose-400 mt-1" id="m-expense">฿0</div>
+              </div>
+              <div class="p-3 sm:p-4 bg-[#050811]/80 rounded-xl border border-cyan-500/20">
+                <span class="text-[11px] text-slate-400 uppercase tracking-wider">NET SAVINGS (กระแสเงินสดสุทธิ):</span>
+                <div class="text-xl sm:text-2xl font-orbitron font-black text-cyan-400 mt-1" id="m-net">฿0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 mt-4 bg-cyan-950/40 border border-cyan-500/30 rounded-xl text-center clip-corner-sm">
+            <span class="text-xs text-cyan-400 font-mono font-semibold uppercase tracking-wider">NET SAVINGS RATE</span>
+            <div class="text-2xl sm:text-3xl font-orbitron font-black text-white mt-0.5 shadow-neon-cyan" id="m-savings-rate">0%</div>
+          </div>
+        </div>
+
+        <!-- Center: Category Breakdown Donut Chart -->
+        <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+          <h2 class="text-sm sm:text-base font-bold text-white mb-1 flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+            <span>RESOURCE ALLOCATION (สัดส่วนรายจ่าย)</span>
+          </h2>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-mono mb-4">โครงสร้างกระสุนที่สูญเสียไปในแต่ละหมวดหมู่</p>
+
+          <div class="relative h-60 sm:h-64 w-full flex items-center justify-center">
+            <canvas id="categoryDonutChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Right: Accounts & Liquidity Balances (Armory) -->
+        <div class="hud-card p-4 sm:p-6 rounded-xl sm:rounded-2xl clip-corner">
+          <h2 class="text-sm sm:text-base font-bold text-white mb-1 flex items-center gap-2">
+            <i data-lucide="credit-card" class="w-4 h-4 text-amber-400"></i>
+            <span>VAULT INVENTORY (สถานะบัญชี)</span>
+          </h2>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-mono mb-4">ตรวจสอบความพร้อมของคลังแสงและบัตรเครดิต</p>
+
+          <div id="accounts-list-container" class="space-y-2.5">
+            <!-- Dynamically rendered with Cyber Inventory cards -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       POCO X8 PRO MOBILE TACTICAL HUD BOTTOM DOCK (THUMB ZONE)
+       Fixed bottom navigation with glowing center Action Core
+  ======================================================== -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#070b16]/95 backdrop-blur-xl border-t border-cyan-500/30 px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.6rem)] shadow-[0_-5px_25px_rgba(0,0,0,0.8)]">
+    <div class="max-w-md mx-auto grid grid-cols-5 items-center justify-between text-center">
+      
+      <!-- Tab 1: Daily Radar -->
+      <button onclick="setHorizon('daily')" id="mob-tab-daily" class="mob-nav-btn flex flex-col items-center justify-center py-1 text-cyan-400 font-mono cyber-btn">
+        <i data-lucide="crosshair" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">RADAR</span>
+      </button>
+
+      <!-- Tab 2: Weekly Timeline -->
+      <button onclick="setHorizon('weekly')" id="mob-tab-weekly" class="mob-nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-cyan-300 font-mono cyber-btn">
+        <i data-lucide="activity" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">TIMELINE</span>
+      </button>
+
+      <!-- Center Action Button: + LOG TX (Poco X8 Pro Ergonomic Thumb Core) -->
+      <div class="flex items-center justify-center -mt-6">
+        <button onclick="openTxModal()" title="บันทึกรายการด่วน" class="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 p-[2px] shadow-neon-cyan cyber-btn flex items-center justify-center transform active:scale-90 transition-transform">
+          <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-[#050811] flex items-center justify-center">
+            <i data-lucide="plus" class="w-6 h-6 text-cyan-400 font-black"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Tab 3: Monthly Vault -->
+      <button onclick="setHorizon('monthly')" id="mob-tab-monthly" class="mob-nav-btn flex flex-col items-center justify-center py-1 text-slate-400 hover:text-cyan-300 font-mono cyber-btn">
+        <i data-lucide="shield" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">VAULT</span>
+      </button>
+
+      <!-- Tab 4: SFX Sound Toggle -->
+      <button onclick="AudioEngine.toggle()" id="mob-sfx-toggle-btn" class="flex flex-col items-center justify-center py-1 text-cyan-400/90 font-mono cyber-btn">
+        <i data-lucide="volume-2" class="w-5 h-5 mb-0.5"></i>
+        <span class="text-[10px] font-bold">SFX</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ========================================================
+       TACTICAL TRANSACTION TERMINAL MODAL
+       Slide-up Cyber Bottom Sheet on Poco X8 Pro / Centered on Desktop
+  ======================================================== -->
+  <div id="tx-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="hud-card w-full sm:max-w-md bg-[#090e1d] border-t-2 sm:border-2 border-cyan-400/60 rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar clip-corner-top sm:clip-corner pb-[max(env(safe-area-inset-bottom),1.5rem)]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 sm:pb-4 border-b border-cyan-500/25">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-cyan-950 border border-cyan-500/40 flex items-center justify-center">
+            <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-orbitron font-bold text-white tracking-wide">
+              TX COMMAND TERMINAL
+            </h3>
+            <span class="text-[10px] font-mono text-cyan-400/80">บันทึกคำสั่งกระแสเงินสด</span>
+          </div>
+        </div>
+        <button onclick="closeTxModal()" class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-400 hover:text-white flex items-center justify-center cyber-btn">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Input Form -->
+      <form id="tx-form" onsubmit="handleCreateTransaction(event)" class="space-y-3.5 mt-4 text-xs font-chakra">
+        
+        <!-- Transaction Type Selector Buttons -->
+        <div>
+          <label class="block text-slate-400 mb-1.5 font-mono text-[11px] font-semibold uppercase">// DIRECTIVE TYPE</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setTxType('expense')" id="btn-tx-expense" class="tx-type-btn py-2.5 rounded-xl font-bold font-mono text-xs transition cyber-btn">
+              - จ่าย (OUTFLOW)
+            </button>
+            <button type="button" onclick="setTxType('income')" id="btn-tx-income" class="tx-type-btn py-2.5 rounded-xl font-bold font-mono text-xs transition cyber-btn">
+              + รับ (INFLOW)
+            </button>
+            <button type="button" onclick="setTxType('transfer')" id="btn-tx-transfer" class="tx-type-btn py-2.5 rounded-xl font-bold font-mono text-xs transition cyber-btn">
+              ⇄ โอน (REALLOCATE)
+            </button>
+          </div>
+        </div>
+
+        <!-- Amount Input Field -->
+        <div>
+          <label class="block text-slate-400 mb-1 font-mono text-[11px] font-semibold uppercase">// CREDITS AMOUNT (บาท)</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 font-orbitron font-bold text-lg">฿</span>
+            <input type="number" step="0.01" min="0.01" required id="tx-amount" placeholder="0.00" class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl pl-9 pr-4 py-3 text-lg sm:text-xl font-orbitron font-bold text-white focus:outline-none focus:border-cyan-400 focus:shadow-neon-cyan transition">
+          </div>
+        </div>
+
+        <!-- Category Selector -->
+        <div id="field-category">
+          <label class="block text-slate-400 mb-1 font-mono text-[11px] font-semibold uppercase">// TARGET CATEGORY</label>
+          <select id="tx-category" class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-400 transition font-mono text-xs">
+            <!-- Dynamic categories -->
+          </select>
+        </div>
+
+        <!-- Accounts Grid -->
+        <div class="grid grid-cols-2 gap-3" id="field-accounts">
+          <div id="field-source-acc">
+            <label class="block text-slate-400 mb-1 font-mono text-[10px] font-semibold uppercase">// FROM VAULT</label>
+            <select id="tx-source" class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-400 transition font-mono text-xs">
+              <!-- Dynamic accounts -->
+            </select>
+          </div>
+          <div id="field-dest-acc" class="hidden">
+            <label class="block text-slate-400 mb-1 font-mono text-[10px] font-semibold uppercase">// TO VAULT</label>
+            <select id="tx-dest" class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-400 transition font-mono text-xs">
+              <!-- Dynamic accounts -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Timestamp Input -->
+        <div>
+          <label class="block text-slate-400 mb-1 font-mono text-[11px] font-semibold uppercase">// MISSION TIMESTAMP</label>
+          <input type="datetime-local" id="tx-date" required class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-cyan-400 transition font-mono text-xs">
+        </div>
+
+        <!-- Note / Memo -->
+        <div>
+          <label class="block text-slate-400 mb-1 font-mono text-[11px] font-semibold uppercase">// MISSION DIRECTIVE NOTE</label>
+          <input type="text" id="tx-notes" placeholder="เช่น กาแฟ Energy Boost, อาหารกลางวัน" class="w-full bg-[#050811] border border-cyan-500/30 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-400 transition text-xs">
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:brightness-110 text-slate-950 font-orbitron font-black py-3 sm:py-3.5 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-2 shadow-neon-cyan cyber-btn tracking-wider uppercase">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>DEPLOY TRANSACTION // บันทึกคำสั่ง</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-cyan-500/20 px-4 sm:px-8 py-4 text-center text-xs font-mono text-slate-500 bg-[#050811] mt-auto">
+    <span>ANTIGRAV CASH FLOW ENGINE &bull; POCO X8 PRO EDITION &bull; BLUEPRINT: </span>
+    <a href="file:///C:/GED/AntiGrav/Brain/plan.md" class="text-cyan-400 hover:underline">plan.md</a>
+  </footer>
+
+  <!-- Application JS Script -->
+  <script src="./app.js"></script>
+</body>
+</html>
