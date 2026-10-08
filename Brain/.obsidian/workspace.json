@@ -11,10 +11,14 @@
             "id": "a2e38126f76a0e61",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "รายรับรายจ่าย/README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
             }
           }
         ]
@@ -186,16 +190,12 @@
   },
   "active": "a2e38126f76a0e61",
   "lastOpenFiles": [
+    "test.md",
     "รายรับรายจ่าย/README.md",
-    "Welcome.md",
-    "plan.md",
     "manual.md",
+    "plan.md",
+    "Welcome.md",
     "รายรับรายจ่าย/finance-data.json",
-    "รายรับรายจ่าย/finance-data.json.tmp",
-    "เธฃเธฒเธขเธฃเธฑเธเธฃเธฒเธขเธเนเธฒเธข/finance-data.json",
-    "เธฃเธฒเธขเธฃเธฑเธเธฃเธฒเธขเธเนเธฒเธข/finance-data.json.tmp",
-    "เธฃเธฒเธขเธฃเธฑเธเธฃเธฒเธขเธเนเธฒเธข",
-    "รายรับรายจ่าย",
-    "test.md"
+    "รายรับรายจ่าย"
   ]
 }
