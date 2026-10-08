@@ -109,6 +109,7 @@ const state = {
 };
 
 const FINANCE_STORAGE_KEY = 'antigrav-finance-state-v1';
+const FINANCE_SYNC_PENDING_KEY = 'antigrav-finance-sync-pending-v1';
 let financeSyncQueue = Promise.resolve();
 
 function getFinanceSnapshot() {
@@ -150,6 +151,12 @@ function saveFinanceStateLocally() {
 
 function syncFinanceStateToObsidian() {
   const snapshot = JSON.stringify(getFinanceSnapshot());
+  try {
+    localStorage.setItem(FINANCE_SYNC_PENDING_KEY, snapshot);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
   financeSyncQueue = financeSyncQueue.catch(() => {}).then(async () => {
     const response = await fetch('/api/finance', {
       method: 'POST',
@@ -158,6 +165,10 @@ function syncFinanceStateToObsidian() {
     });
     if (!response.ok) {
       throw new Error(`Finance API returned HTTP ${response.status}`);
+    }
+
+    if (localStorage.getItem(FINANCE_SYNC_PENDING_KEY) === snapshot) {
+      localStorage.removeItem(FINANCE_SYNC_PENDING_KEY);
     }
   });
   return financeSyncQueue;
@@ -882,23 +893,47 @@ function handleCreateTransaction(event) {
 // ==========================================
 async function initializeApplication() {
   let hasLocalState = false;
+  let hasPendingSync = false;
+  let pendingSyncData = null;
 
   try {
-    const localData = localStorage.getItem(FINANCE_STORAGE_KEY);
-    if (localData) {
-      hasLocalState = restoreFinanceState(JSON.parse(localData));
+    pendingSyncData = localStorage.getItem(FINANCE_SYNC_PENDING_KEY);
+    if (pendingSyncData) {
+      if (!restoreFinanceState(JSON.parse(pendingSyncData))) {
+        throw new Error('Pending finance sync data has an invalid structure.');
+      }
+      hasLocalState = true;
+      hasPendingSync = true;
+    } else {
+      const localData = localStorage.getItem(FINANCE_STORAGE_KEY);
+      if (localData) {
+        hasLocalState = restoreFinanceState(JSON.parse(localData));
+      }
     }
   } catch (error) {
     console.error('Unable to restore finance data from browser storage.', error);
+    if (pendingSyncData) {
+      alert('ข้อมูลที่รอซิงก์เสียหาย จึงหยุดไว้ก่อนเพื่อป้องกันข้อมูลในเบราว์เซอร์สูญหาย');
+      return;
+    }
     alert('อ่านข้อมูลจากเบราว์เซอร์ไม่สำเร็จ รายการที่บันทึกใน Obsidian จะยังถูกโหลดหากเชื่อมต่อเซิร์ฟเวอร์ได้');
   }
 
   updateAllViews();
   if (window.lucide) lucide.createIcons();
 
+  if (window.location.protocol === 'file:') {
+    alert('เปิดแอปผ่านไฟล์โดยตรงอยู่ ข้อมูลจะไม่ซิงก์ไป Obsidian กรุณาเปิด start-server.bat แล้วเข้า http://localhost:8080');
+    return;
+  }
   if (window.location.protocol !== 'http:' && window.location.protocol !== 'https:') return;
 
   try {
+    if (hasPendingSync) {
+      await syncFinanceStateToObsidian();
+      return;
+    }
+
     const response = await fetch('/api/finance');
     if (!response.ok) {
       throw new Error(`Finance API returned HTTP ${response.status}`);
@@ -917,8 +952,13 @@ async function initializeApplication() {
       await syncFinanceStateToObsidian();
     }
   } catch (error) {
-    console.error('Unable to load finance data from the Obsidian vault.', error);
-    alert('ไม่สามารถเชื่อมต่อกับข้อมูลใน Obsidian ได้ ขณะนี้จะแสดงข้อมูลที่บันทึกไว้ในเบราว์เซอร์');
+    if (hasPendingSync) {
+      console.error('Unable to sync pending finance data to the Obsidian vault.', error);
+      alert('มีรายการค้างซิงก์ ข้อมูลยังเก็บในเบราว์เซอร์และจะลองซิงก์ใหม่เมื่อเปิดแอปครั้งถัดไป');
+    } else {
+      console.error('Unable to load finance data from the Obsidian vault.', error);
+      alert('ไม่สามารถเชื่อมต่อกับข้อมูลใน Obsidian ได้ ขณะนี้จะแสดงข้อมูลที่บันทึกไว้ในเบราว์เซอร์');
+    }
   }
 }
 

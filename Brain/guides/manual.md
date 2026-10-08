@@ -223,6 +223,12 @@ Poco X8 Pro มีขนาดจอ 6.67 นิ้ว สัดส่วนแ�
    powershell -ExecutionPolicy Bypass -File .\server\server.ps1
    ```
 
+### 6.3 การซิงก์ข้อมูลจากเบราว์เซอร์เข้า Obsidian
+
+การซิงก์ทำผ่าน Local HTTP Server: เปิด `start-server.bat` แล้วเข้า `http://localhost:8080` จากนั้นรายการที่บันทึกจะถูกส่งผ่าน `/api/finance` และเขียนลง `Brain/รายรับรายจ่าย/finance-data.json`
+
+การเปิด `apps/cyber-hud/index.html` โดยตรง (`file://`) จะไม่เรียก API และซิงก์ไม่ได้ แอปจะแจ้งเตือนให้เปิดผ่านเซิร์ฟเวอร์ หากการเชื่อมต่อขัดข้องหลังบันทึกรายการ แอปจะเก็บข้อมูลค้างซิงก์ใน browser storage และลองส่งใหม่เมื่อเปิดผ่านเซิร์ฟเวอร์ครั้งถัดไป
+
 ---
 
 ## 📖 7. บทเรียนสำคัญสำหรับการนำไปสอน (Teaching & Developer Takeaways)

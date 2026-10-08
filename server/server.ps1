@@ -214,7 +214,13 @@ try {
                     $temporaryPath = "$financeDataPath.tmp"
                     [System.IO.File]::WriteAllText($temporaryPath, $financeJson, [System.Text.UTF8Encoding]::new($false))
                     if (Test-Path $financeDataPath -PathType Leaf) {
-                        [System.IO.File]::Replace($temporaryPath, $financeDataPath, $null)
+                        $backupPath = "$financeDataPath.$([Guid]::NewGuid().ToString('N')).bak"
+                        [System.IO.File]::Replace($temporaryPath, $financeDataPath, $backupPath)
+                        try {
+                            [System.IO.File]::Delete($backupPath)
+                        } catch {
+                            Write-Host "  WARN unable to remove finance backup $backupPath`: $_" -ForegroundColor Yellow
+                        }
                     } else {
                         [System.IO.File]::Move($temporaryPath, $financeDataPath)
                     }

@@ -662,7 +662,7 @@ C:\GED\AntiGrav\
 
 Local HTTP Server ใช้พอร์ตเริ่มต้น `8080`:
 * 🌐 **URL:** [http://localhost:8080](http://localhost:8080)
-* หรือเปิด `apps/cyber-hud/index.html` ผ่าน Web Browser (Chrome / Edge / Safari / Opera) ได้โดยตรง
+* **การซิงก์กับ vault ต้องเปิดผ่าน URL นี้เท่านั้น** โดยเริ่ม `start-server.bat` ก่อน การเปิด `apps/cyber-hud/index.html` โดยตรงใช้ได้เฉพาะโหมดเบราว์เซอร์และไม่สามารถเขียนข้อมูลเข้า vault
 
 **ฟีเจอร์เด่นในแอพที่สามารถทดลองใช้งานได้ทันที:**
 1. **Horizon Switcher:** สลับดูกระดานสรุปแบบ **Daily**, **Weekly**, และ **Monthly**
