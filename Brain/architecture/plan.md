@@ -16,7 +16,7 @@ type: blueprint
 
 # 🧭 Personal Expense & Cash Flow Management App Blueprint
 
-> **เอกสารที่เกี่ยวข้อง:** [[manual|คู่มือแอปและเซิร์ฟเวอร์]] · [[test|บันทึกการทดสอบ]] · [[รายรับรายจ่าย/README|สมุดรายรับรายจ่าย]] · [[Welcome|หน้าหลักของ vault]]
+> **เอกสารที่เกี่ยวข้อง:** [[guides/manual|คู่มือแอปและเซิร์ฟเวอร์]] · [[testing/test|บันทึกการทดสอบ]] · [[รายรับรายจ่าย/README|สมุดรายรับรายจ่าย]] · [[Welcome|หน้าหลักของ vault]]
 
 > [!ABSTRACT] Executive Summary
 > พิมพ์เขียวทางสถาปัตยกรรม (System Blueprint) และคู่มือการพัฒนาระบบ **Personal Expense & Cash Flow Management Application** โดยมุ่งเน้นการแก้ปัญหาหลักของการเงินส่วนบุคคล: **"การบริหารเงินสด สภาพคล่อง (Liquidity) และการพยากรณ์กระแสเงินสดล่วงหน้า (Predictive Cash Flow)"** เพื่อป้องกันปัญหาเงินขาดมือ (Cash Shortfall) และช่วยวางแผนการใช้จ่ายจริงอย่างสบายใจ (Safe-to-Spend)
@@ -596,7 +596,7 @@ export default function DashboardPage() {
   - [x] ผ่านการทดสอบคำนวณ Safe-to-Spend, Cash Runway, Overdraft Hazards, และ Financial Health Ratios (100% assertions passed)
 - [x] **Phase 3: Frontend & Data Visualization**
   - [x] พัฒนา Next.js App Router Dashboard Page (`src/app/dashboard/page.tsx`)
-  - [x] พัฒนา Standalone Interactive Web Application (`index.html` + `app.js`) พร้อมรันได้ทันที
+  - [x] พัฒนา Standalone Interactive Web Application (`apps/cyber-hud/index.html` + `apps/cyber-hud/app.js`) พร้อมรันได้ทันที
   - [x] รองรับทั้ง 3 Time Horizons: Daily (Safe-to-Spend & Forecast), Weekly (Inflow/Outflow & Spike Days), Monthly (Breakdown & Net Flow)
   - [x] ติดตั้ง Chart.js แสดงกราฟ Area Chart (30-day forecast), Bar Chart (Weekly), และ Donut Chart (Categories)
 - [x] **Phase 4: Financial Guardrails & Operational System**
@@ -612,10 +612,25 @@ export default function DashboardPage() {
 
 ```text
 C:\GED\AntiGrav\
-├── index.html                                # Standalone Single Page Application (Tailwind + Lucide + Chart.js)
-├── app.js                                    # Client Analytics Engine, Reactive State & Chart Management
+├── README.md                                 # Project map and quick start
+├── apps\
+│   └── cyber-hud\
+│       ├── index.html                        # Standalone Single Page Application
+│       └── app.js                            # Client Analytics, state, and chart management
 ├── Brain\
-│   └── plan.md                               # Obsidian Master Blueprint & Progress Tracker
+│   ├── Welcome.md                            # Obsidian knowledge hub
+│   ├── architecture\
+│   │   └── plan.md                           # System blueprint and progress tracker
+│   ├── guides\
+│   │   └── manual.md                         # Usage and local-server guide
+│   ├── testing\
+│   │   └── test.md                           # Test entry point
+│   └── รายรับรายจ่าย\
+│       ├── README.md                         # Finance data notes
+│       └── finance-data.json                 # Local finance records
+├── server\
+│   └── server.ps1                            # Local HTTP server
+├── start-server.bat                          # Double-click launcher
 ├── src\
 │   ├── types\
 │   │   └── finance.ts                        # TypeScript Data Models (Accounts, Transactions, Budgets)
@@ -645,9 +660,9 @@ C:\GED\AntiGrav\
 
 ### 8.3 วิธีเปิดใช้งาน Web Application ในเครื่อง (Live Access)
 
-ปัจจุบันระบบมี Local HTTP Server กำลังทำงานอยู่ที่พอร์ต `3000`:
-* 🌐 **URL:** [http://localhost:3000](http://localhost:3000)
-* หรือเปิดไฟล์ [index.html](file:///C:/GED/AntiGrav/index.html) ผ่าน Web Browser (Chrome / Edge / Safari / Opera) ได้โดยตรง
+Local HTTP Server ใช้พอร์ตเริ่มต้น `8080`:
+* 🌐 **URL:** [http://localhost:8080](http://localhost:8080)
+* หรือเปิด `apps/cyber-hud/index.html` ผ่าน Web Browser (Chrome / Edge / Safari / Opera) ได้โดยตรง
 
 **ฟีเจอร์เด่นในแอพที่สามารถทดลองใช้งานได้ทันที:**
 1. **Horizon Switcher:** สลับดูกระดานสรุปแบบ **Daily**, **Weekly**, และ **Monthly**

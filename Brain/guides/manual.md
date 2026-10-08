@@ -6,7 +6,7 @@
 > **ชุดเทคโนโลยี:** HTML5, Tailwind CSS, Lucide Icons, Chart.js, Web Audio API, Vanilla JS, PowerShell  
 > **วันที่บันทึก:** 2026-10-03  
 
-> **เอกสารที่เกี่ยวข้อง:** [[plan|พิมพ์เขียวระบบการเงิน]] · [[test|บันทึกการทดสอบ]] · [[รายรับรายจ่าย/README|สมุดรายรับรายจ่าย]] · [[Welcome|หน้าหลักของ vault]]
+> **เอกสารที่เกี่ยวข้อง:** [[architecture/plan|พิมพ์เขียวระบบการเงิน]] · [[testing/test|บันทึกการทดสอบ]] · [[รายรับรายจ่าย/README|สมุดรายรับรายจ่าย]] · [[Welcome|หน้าหลักของ vault]]
 
 ---
 
@@ -15,7 +15,7 @@
 ในเซสชันการพัฒนานี้ เราได้ทำการยกเครื่องหน้าแดชบอร์ดบริหารการเงินเดิม (**AntiGrav Cash Flow**) ใหม่ทั้งหมด เพื่อตอบโจทย์ความต้องการหลัก 3 ประการ:
 1. **การปรับแต่งสำหรับมือถือ Poco X8 Pro อย่างเต็มรูปแบบ**: ออกแบบตามหลักสรีรศาสตร์หน้าจอแนวตั้งสัดส่วนยาว 20:9 รองรับการควบคุมด้วยนิ้วโป้งมือเดียว (Single-handed Thumb Accessibility) พร้อมคำนึงถึง Safe-Area ป้องกันการทับซ้อนกับรูกล้อง Punch-hole และแถบ Gesture ด้านล่าง
 2. **การแปลงโฉมเป็น Cyberpunk Gaming HUD**: เปลี่ยนหน้าตาเว็บองค์กรแบบเดิมให้กลายเป็นห้องควบคุมสั่งการสไตล์เกม Sci-Fi ล้ำสมัย โดยเลือกใช้ชุดฟอนต์ที่ให้กลิ่นอายเกมและรองรับภาษาไทยอย่างสมบูรณ์, มาตรวัดพลังงานนีออน, แถบเกราะป้องกันแอนิเมชัน และระบบเสียงสังเคราะห์ Game SFX ผ่าน Web Audio API แบบเรียลไทม์
-3. **การเข้าถึงข้ามอุปกรณ์และการแก้ปัญหาสิทธิ์ Windows**: พัฒนา Local HTTP Server แบบไร้ Dependency ภายนอก (`server.ps1` และ `start-server.bat`) ช่วยให้อุปกรณ์มือถือ Poco X8 Pro เครื่องจริงสามารถเชื่อมต่อเข้ามาใช้งานผ่าน Wi-Fi วงเดียวกันได้ทันที โดยไม่ติดบล็อกระบบความปลอดภัย Windows Execution Policy
+3. **การเข้าถึงข้ามอุปกรณ์และการแก้ปัญหาสิทธิ์ Windows**: พัฒนา Local HTTP Server แบบไร้ Dependency ภายนอก (`server/server.ps1` และ `start-server.bat`) ช่วยให้อุปกรณ์มือถือ Poco X8 Pro เครื่องจริงสามารถเชื่อมต่อเข้ามาใช้งานผ่าน Wi-Fi วงเดียวกันได้ทันที โดยไม่ติดบล็อกระบบความปลอดภัย Windows Execution Policy
 
 ---
 
@@ -45,7 +45,7 @@ flowchart TD
 
     subgraph Network ["ระบบเครือข่าย & การเปิดเซิร์ฟเวอร์"]
         TcpServ["PowerShell TcpListener (Port 8080 บน 0.0.0.0)"]
-        BatWrap["start-server.bat (ตัวข้ามสิทธิ์ ExecutionPolicy)"]
+        BatWrap["start-server.bat (เปิด server/server.ps1)"]
         Clients["อุปกรณ์ปลายทาง: PC (localhost) & Poco X8 Pro (192.168.1.51)"]
     end
 
@@ -122,7 +122,7 @@ flowchart TD
 
 ## 🔊 4. ระบบสังเคราะห์เสียง Game SFX ไร้ไฟล์ภายนอก (Web Audio API)
 
-แทนที่จะต้องแนบไฟล์ `.mp3` หรือ `.wav` ซึ่งทำให้เปลือง Bandwidth มีโอกาสโหลดไม่ทัน และมักถูกเบราว์เซอร์บล็อก Autoplay เราได้สร้าง Sound Synthesizer ขึ้นมาจาก Web Audio API ภายใน `app.js` โดยตรง:
+แทนที่จะต้องแนบไฟล์ `.mp3` หรือ `.wav` ซึ่งทำให้เปลือง Bandwidth มีโอกาสโหลดไม่ทัน และมักถูกเบราว์เซอร์บล็อก Autoplay เราได้สร้าง Sound Synthesizer ขึ้นมาจาก Web Audio API ภายใน `apps/cyber-hud/app.js` โดยตรง:
 
 ```javascript
 const AudioEngine = {
@@ -199,7 +199,7 @@ Poco X8 Pro มีขนาดจอ 6.67 นิ้ว สัดส่วนแ�
 ### 6.1. เหตุผลที่เลือก `TcpListener` แทน `HttpListener`
 - ตัวคลาส `System.Net.HttpListener` ของ Windows มีระบบตรวจสิทธิ์ URL ACL ที่เข้มงวด การสั่งผูกกับ IP ภายนอก (เช่น `http://192.168.1.51:8080`) โดยไม่รันแบบ Administrator จะส่งผลให้เกิดข้อผิดพลาด:
   `HTTP Error 400. The request hostname is invalid.`
-- **วิธีแก้ใน `server.ps1`:** เราเปลี่ยนมาใช้คลาส `System.Net.Sockets.TcpListener` และผูกกับ `[System.Net.IPAddress]::Any (0.0.0.0)` บนพอร์ต 8080 ทำให้ User ทั่วไปสามารถแชร์เว็บให้มือถือที่เกาะ Wi-Fi วงเดียวกันเปิดเข้ามาได้ทันทีโดยไม่ต้องใช้สิทธิ์ Admin
+- **วิธีแก้ใน `server/server.ps1`:** เราเปลี่ยนมาใช้คลาส `System.Net.Sockets.TcpListener` และผูกกับ `[System.Net.IPAddress]::Any (0.0.0.0)` บนพอร์ต 8080 ทำให้ User ทั่วไปสามารถแชร์เว็บให้มือถือที่เกาะ Wi-Fi วงเดียวกันเปิดเข้ามาได้ทันทีโดยไม่ต้องใช้สิทธิ์ Admin
 
 ### 6.2. การแก้ปัญหาบล็อกสิทธิ์ PowerShell Execution Policy
 เมื่อผู้ใช้รันไฟล์สคริปต์ `.ps1` บน Windows มักจะเจอกับข้อผิดพลาด:
@@ -210,7 +210,7 @@ Poco X8 Pro มีขนาดจอ 6.67 นิ้ว สัดส่วนแ�
    ```cmd
    @echo off
    cd /d "%~dp0"
-   powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0server.ps1"
+   powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0server\server.ps1"
    pause
    ```
    ผู้ใช้เพียงแค่ดับเบิลคลิกไฟล์นี้ในโฟลเดอร์ Windows Explorer ก็จะเริ่มทำงานทันทีโดยไม่ต้องเปิด Terminal
@@ -220,7 +220,7 @@ Poco X8 Pro มีขนาดจอ 6.67 นิ้ว สัดส่วนแ�
    ```
 3. **สั่งรันแบบข้ามสิทธิ์เฉพาะครั้งนี้ (Bypass via CLI):**
    ```powershell
-   powershell -ExecutionPolicy Bypass -File .\server.ps1
+   powershell -ExecutionPolicy Bypass -File .\server\server.ps1
    ```
 
 ---
@@ -240,9 +240,9 @@ Poco X8 Pro มีขนาดจอ 6.67 นิ้ว สัดส่วนแ�
 
 ## 📂 8. สรุปรายการไฟล์ในโปรเจกต์ (File Inventory)
 
-- **[`index.html`](file:///c:/GED/AntiGrav/index.html):** โครงสร้างหน้าเว็บหลัก, การตั้งค่าธีม Tailwind Cyber, การ์ด 2x2 Grid และ Mobile Bottom Dock
-- **[`app.js`](file:///c:/GED/AntiGrav/app.js):** เอนจินคำนวณกระแสเงินสด, ระบบเสียงสังเคราะห์ Web Audio, ธีมกราฟนีออน Chart.js และตัวสลับแท็บ
-- **[`server.ps1`](file:///c:/GED/AntiGrav/server.ps1):** Local HTTP Server ภาษา PowerShell แบบเปิดให้ต่อผ่าน LAN Wi-Fi ได้ (`0.0.0.0:8080`)
-- **[`start-server.bat`](file:///c:/GED/AntiGrav/start-server.bat):** ตัวเปิดเซิร์ฟเวอร์แบบดับเบิลคลิก พร้อมแก้ปัญหา Execution Policy อัตโนมัติ
-- **[`Brain/manual.md`](file:///c:/GED/AntiGrav/Brain/manual.md):** เอกสารคู่มือฉบับนี้ (ภาษาไทย)
-- **[`Brain/plan.md`](file:///c:/GED/AntiGrav/Brain/plan.md):** พิมพ์เขียวเชิงสถาปัตยกรรมและอัลกอริทึมการเงินส่วนบุคคลฉบับเต็ม
+- **`apps/cyber-hud/index.html`:** โครงสร้างหน้าเว็บหลัก, การตั้งค่าธีม Tailwind Cyber, การ์ด 2x2 Grid และ Mobile Bottom Dock
+- **`apps/cyber-hud/app.js`:** เอนจินคำนวณกระแสเงินสด, ระบบเสียงสังเคราะห์ Web Audio, ธีมกราฟนีออน Chart.js และตัวสลับแท็บ
+- **`server/server.ps1`:** Local HTTP Server ภาษา PowerShell แบบเปิดให้ต่อผ่าน LAN Wi-Fi ได้ (`0.0.0.0:8080`)
+- **[`start-server.bat`](../../start-server.bat):** ตัวเปิดเซิร์ฟเวอร์แบบดับเบิลคลิก พร้อมแก้ปัญหา Execution Policy อัตโนมัติ
+- **`Brain/guides/manual.md`:** เอกสารคู่มือฉบับนี้ (ภาษาไทย)
+- **`Brain/architecture/plan.md`:** พิมพ์เขียวเชิงสถาปัตยกรรมและอัลกอริทึมการเงินส่วนบุคคลฉบับเต็ม

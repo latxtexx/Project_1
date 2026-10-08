@@ -190,11 +190,17 @@
   },
   "active": "a2e38126f76a0e61",
   "lastOpenFiles": [
+    "testing/test.md",
+    "guides/manual.md",
+    "architecture/plan.md",
+    "testing",
+    "guides",
+    "architecture",
     "รายรับรายจ่าย/README.md",
     "Welcome.md",
-    "test.md",
-    "plan.md",
-    "manual.md",
+    "testing/test.md",
+    "architecture/plan.md",
+    "guides/manual.md",
     "รายรับรายจ่าย/finance-data.json",
     "รายรับรายจ่าย"
   ]

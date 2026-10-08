@@ -1,5 +1,5 @@
 # AntiGrav Static File Server
-# Usage:  powershell -ExecutionPolicy Bypass -File server.ps1 [-Port 8080]
+# Usage:  powershell -ExecutionPolicy Bypass -File server\server.ps1 [-Port 8080]
 # Or:     double-click start-server.bat
 
 param(
@@ -7,10 +7,11 @@ param(
 )
 
 # ---------------------------------------------------------------------------
-# Base directory = wherever this script lives
+# Resolve project, app, and data directories from this script's location.
 # ---------------------------------------------------------------------------
-$baseDir = $PSScriptRoot
-if (-not $baseDir) { $baseDir = (Get-Location).Path }
+$projectDir = Split-Path -Parent $PSScriptRoot
+if (-not $projectDir) { $projectDir = (Get-Location).Path }
+$webRoot = Join-Path $projectDir 'apps\cyber-hud'
 
 # ---------------------------------------------------------------------------
 # MIME type lookup
@@ -140,9 +141,29 @@ try {
             # Default document
             if ($urlPath -eq '/') { $urlPath = '/index.html' }
 
+            if ($urlPath -eq '/docs/plan.md') {
+                if ($method -ne 'GET') {
+                    Send-HttpResponse $stream '405 Method Not Allowed' 'application/json; charset=utf-8' '{"error":"Method not allowed."}'
+                    $responseSent = $true
+                    continue
+                }
+
+                $blueprintPath = Join-Path $projectDir 'Brain\architecture\plan.md'
+                if (Test-Path $blueprintPath -PathType Leaf) {
+                    $blueprint = [System.IO.File]::ReadAllText($blueprintPath, [System.Text.Encoding]::UTF8)
+                    Send-HttpResponse $stream '200 OK' 'text/markdown; charset=utf-8' $blueprint
+                    $responseSent = $true
+                    Write-Host '  200 /docs/plan.md' -ForegroundColor DarkGreen
+                } else {
+                    Send-HttpResponse $stream '404 Not Found' 'text/plain; charset=utf-8' 'Blueprint not found.'
+                    $responseSent = $true
+                }
+                continue
+            }
+
             if ($urlPath -eq '/api/finance') {
                 $financeFolderName = -join [char[]](0x0E23, 0x0E32, 0x0E22, 0x0E23, 0x0E31, 0x0E1A, 0x0E23, 0x0E32, 0x0E22, 0x0E08, 0x0E48, 0x0E32, 0x0E22)
-                $financeDirectory = Join-Path (Join-Path $baseDir 'Brain') $financeFolderName
+                $financeDirectory = Join-Path (Join-Path $projectDir 'Brain') $financeFolderName
                 $financeDataPath = Join-Path $financeDirectory 'finance-data.json'
 
                 if ($method -eq 'GET') {
@@ -211,10 +232,10 @@ try {
 
             # Security: prevent path traversal
             $urlPath = $urlPath.Replace('/', '\')
-            $filePath = Join-Path $baseDir $urlPath.TrimStart('\')
-            $fullBase = [IO.Path]::GetFullPath($baseDir)
+            $filePath = Join-Path $webRoot $urlPath.TrimStart('\')
+            $fullBase = [IO.Path]::GetFullPath($webRoot) + [IO.Path]::DirectorySeparatorChar
             $fullFile = [IO.Path]::GetFullPath($filePath)
-            if (-not $fullFile.StartsWith($fullBase)) {
+            if (-not $fullFile.StartsWith($fullBase, [StringComparison]::OrdinalIgnoreCase)) {
                 # Attempted directory traversal – return 403
                 $body = [System.Text.Encoding]::UTF8.GetBytes('<h1>403 Forbidden</h1>')
                 $hdr  = "HTTP/1.1 403 Forbidden`r`nContent-Type: text/html`r`nContent-Length: $($body.Length)`r`nConnection: close`r`n`r`n"

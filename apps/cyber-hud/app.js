@@ -1,7 +1,7 @@
 /**
  * AntiGrav Personal Expense & Cash Flow Management Engine
  * Cyber Gaming HUD & Mobile (Poco X8 Pro) Optimized Edition
- * Implementation of algorithms & reactive UI state based on C:\GED\AntiGrav\Brain\plan.md
+ * Implementation of algorithms & reactive UI state based on Brain/architecture/plan.md
  */
 
 // ==========================================
