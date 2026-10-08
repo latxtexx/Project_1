@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "รายรับรายจ่าย/README.md",
+                "file": "Welcome.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "Welcome"
             }
           }
         ]
@@ -190,11 +190,11 @@
   },
   "active": "a2e38126f76a0e61",
   "lastOpenFiles": [
-    "test.md",
     "รายรับรายจ่าย/README.md",
-    "manual.md",
-    "plan.md",
     "Welcome.md",
+    "test.md",
+    "plan.md",
+    "manual.md",
     "รายรับรายจ่าย/finance-data.json",
     "รายรับรายจ่าย"
   ]
