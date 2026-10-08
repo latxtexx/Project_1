@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Welcome.md",
+                "file": "guides/manual.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Welcome"
+              "title": "manual"
             }
           }
         ]
@@ -191,16 +191,17 @@
   "active": "a2e38126f76a0e61",
   "lastOpenFiles": [
     "testing/test.md",
+    "Welcome.md",
     "guides/manual.md",
+    "รายรับรายจ่าย/finance-data.json.tmp",
+    "รายรับรายจ่าย/README.md",
     "architecture/plan.md",
     "testing",
     "guides",
     "architecture",
-    "รายรับรายจ่าย/README.md",
-    "Welcome.md",
-    "testing/test.md",
-    "architecture/plan.md",
-    "guides/manual.md",
+    "test.md",
+    "plan.md",
+    "manual.md",
     "รายรับรายจ่าย/finance-data.json",
     "รายรับรายจ่าย"
   ]
